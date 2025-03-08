@@ -1,0 +1,332 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{times}
+\usepackage{setspace}
+
+\geometry{
+    a4paper,
+    left=3cm,
+    right=3cm,
+    top=3cm,
+    bottom=3cm,
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{\textbf{Implementasi Unit Testing dan Instrumental Testing}}
+\author{Muhammad Mahathir\\2208107010056}
+\date{2025}
+
+\begin{document}
+\begin{titlepage}
+    \flushleft
+    {\normalsize\textit{Tugas Kualitas Perangkat Lunak}}
+    
+    \vspace{1cm}
+    
+    \begin{center}
+        {\Large\textbf{Implementasi Unit Testing dan Instrumental Testing}}
+        
+        \vspace{1.5cm}
+        
+        {\normalsize\textit{disusun untuk memenuhi tugas mata\\kuliah Kualitas Perangkat Lunak}}
+        
+        \vspace{1.5cm}
+        
+        {\normalsize\textit{oleh :}}\\
+        \vspace{0.5cm}
+        {\normalsize\textbf{Muhammad Mahathir}}\\
+        {\normalsize\textbf{(2208107010056)}}
+        
+        \vspace{2.5cm}
+        
+        \includegraphics[width=0.3\textwidth]{images/logo_unsyiah.png}
+        
+        \vfill
+        
+        {\normalsize\textbf{JURUSAN INFORMATIKA}}\\
+        {\normalsize\textbf{FAKULTAS MATEMATIKA DAN ILMU PENGETAHUAN ALAM}}\\
+        {\normalsize\textbf{UNIVERSITAS SYIAH KUALA}}\\
+        {\normalsize\textbf{DARUSSALAM, BANDA ACEH}}\\
+        {\normalsize\textbf{2025}}
+    \end{center}
+\end{titlepage}
+
+\section{Pendahuluan}
+Laporan ini menjelaskan implementasi testing pada aplikasi Android sederhana yang memiliki fitur validasi password dan operasi kalkulator dasar. Proyek ini mendemonstrasikan penggunaan unit testing dan instrumental testing dalam pengembangan aplikasi Android.
+
+\section{Struktur Proyek}
+Proyek terdiri dari beberapa komponen utama:
+\begin{itemize}
+    \item MainActivity.java - Activity utama aplikasi
+    \item Calculator.java - Kelas untuk logika bisnis
+    \item Layout XML - Antarmuka pengguna
+    \item Unit Tests - Pengujian logika bisnis
+    \item Instrumental Tests - Pengujian interaksi UI
+\end{itemize}
+
+\section{Implementasi Aplikasi}
+
+\subsection{Kelas Calculator}
+Kelas Calculator mengimplementasikan tiga fungsi utama:
+\begin{itemize}
+    \item add() - Melakukan operasi penambahan
+    \item subtract() - Melakukan operasi pengurangan
+    \item validatePassword() - Memvalidasi password
+\end{itemize}
+
+\begin{lstlisting}[language=Java, caption=Calculator.java]
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+    
+    public String validatePassword(String password) {
+        if (password == null || password.isEmpty()) {
+            return "Password cannot be empty";
+        }
+        if (password.length() < 6) {
+            return "Password must be at least 6 characters";
+        }
+        return "Valid password";
+    }
+}
+\end{lstlisting}
+
+\subsection{Antarmuka Pengguna}
+Aplikasi memiliki antarmuka pengguna sederhana yang terdiri dari:
+\begin{itemize}
+    \item EditText untuk input password
+    \item Button untuk validasi
+    \item TextView untuk menampilkan hasil
+\end{itemize}
+
+\section{Implementasi Testing}
+
+\subsection{Unit Testing}
+Unit testing dilakukan untuk menguji logika bisnis dari kelas Calculator. Berikut adalah test case yang diimplementasikan:
+
+\begin{lstlisting}[language=Java, caption=ExampleUnitTest.java]
+/**
+ * Local Unit Tests for Calculator class
+ * 
+ * Test Cases:
+ * 1. testAddition
+ *    - Tests the add() method of Calculator
+ *    - Verifies that 2 + 2 equals 4
+ *    - Basic arithmetic operation validation
+ * 
+ * 2. testSubtraction
+ *    - Tests the subtract() method of Calculator
+ *    - Verifies that 5 - 3 equals 2
+ *    - Basic arithmetic operation validation
+ * 
+ * 3. testPasswordValidation_Empty
+ *    - Tests password validation with empty input
+ *    - Verifies that empty password returns error message
+ *    - Input validation testing
+ * 
+ * 4. testPasswordValidation_TooShort
+ *    - Tests password validation with short password
+ *    - Verifies that password less than 6 characters returns error message
+ *    - Boundary testing for password length
+ */
+public class ExampleUnitTest {
+    private Calculator calculator = new Calculator();
+
+    @Test
+    public void testAddition() {
+        assertEquals(4, calculator.add(2, 2));
+    }
+
+    @Test
+    public void testSubtraction() {
+        assertEquals(2, calculator.subtract(5, 3));
+    }
+
+    @Test
+    public void testPasswordValidation_Empty() {
+        assertEquals("Password cannot be empty", 
+                    calculator.validatePassword(""));
+    }
+
+    @Test
+    public void testPasswordValidation_TooShort() {
+        assertEquals("Password must be at least 6 characters", 
+                    calculator.validatePassword("12345"));
+    }
+}
+\end{lstlisting}
+
+\subsection{Instrumental Testing}
+Instrumental testing dilakukan untuk menguji interaksi pengguna dengan aplikasi. Berikut adalah test case yang diimplementasikan:
+
+\begin{lstlisting}[language=Java, caption=ExampleInstrumentedTest.java]
+/**
+ * Instrumented Tests for MainActivity
+ * 
+ * Test Cases:
+ * 1. useAppContext
+ *    - Verifies the package name of the app context
+ *    - Basic context validation
+ * 
+ * 2. testPasswordValidation_UI_Empty
+ *    - Tests password validation through UI with empty input
+ *    - Verifies that clicking validate with empty field shows error message
+ *    - UI interaction and validation testing
+ * 
+ * 3. testPasswordValidation_UI_TooShort
+ *    - Tests password validation through UI with short password
+ *    - Verifies that entering short password shows error message
+ *    - UI interaction and validation testing
+ * 
+ * 4. testPasswordValidation_UI_Valid
+ *    - Tests password validation through UI with valid password
+ *    - Verifies that entering valid password shows success message
+ *    - UI interaction and validation testing
+ */
+@RunWith(AndroidJUnit4.class)
+public class ExampleInstrumentedTest {
+    @Test
+    public void useAppContext() {
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        assertEquals("com.example.testingproject2", appContext.getPackageName());
+    }
+
+    @Test
+    public void testPasswordValidation_UI_Empty() {
+        ActivityScenario.launch(MainActivity.class);
+        onView(withId(R.id.validateButton)).perform(click());
+        onView(withId(R.id.resultText)).check(matches(withText("Password cannot be empty")));
+    }
+
+    @Test
+    public void testPasswordValidation_UI_TooShort() {
+        ActivityScenario.launch(MainActivity.class);
+        onView(withId(R.id.passwordInput)).perform(typeText("12345"));
+        onView(withId(R.id.validateButton)).perform(click());
+        onView(withId(R.id.resultText)).check(matches(withText("Password must be at least 6 characters")));
+    }
+
+    @Test
+    public void testPasswordValidation_UI_Valid() {
+        ActivityScenario.launch(MainActivity.class);
+        onView(withId(R.id.passwordInput)).perform(typeText("123456"));
+        onView(withId(R.id.validateButton)).perform(click());
+        onView(withId(R.id.resultText)).check(matches(withText("Valid password")));
+    }
+}
+
+\end{lstlisting}
+
+\section{Penjelasan Test Case}
+
+\subsection{Unit Test Cases}
+\begin{enumerate}
+    \item \textbf{testAddition()}
+    \begin{itemize}
+        \item Menguji fungsi penambahan
+        \item Memastikan 2 + 2 = 4
+        \item Validasi operasi aritmatika dasar
+    \end{itemize}
+    
+    \item \textbf{testSubtraction()}
+    \begin{itemize}
+        \item Menguji fungsi pengurangan
+        \item Memastikan 5 - 3 = 2
+        \item Validasi operasi aritmatika dasar
+    \end{itemize}
+    
+    \item \textbf{testPasswordValidation\_Empty()}
+    \begin{itemize}
+        \item Menguji validasi password kosong
+        \item Memastikan pesan error yang sesuai
+        \item Pengujian validasi input
+    \end{itemize}
+    
+    \item \textbf{testPasswordValidation\_TooShort()}
+    \begin{itemize}
+        \item Menguji validasi password pendek
+        \item Memastikan minimal 6 karakter
+        \item Pengujian batas minimal password
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Instrumental Test Cases}
+\begin{enumerate}
+    \item \textbf{useAppContext()}
+    \begin{itemize}
+        \item Validasi package name aplikasi
+        \item Memastikan konteks aplikasi benar
+    \end{itemize}
+    
+    \item \textbf{testPasswordValidation\_UI\_Empty()}
+    \begin{itemize}
+        \item Menguji validasi password kosong melalui UI
+        \item Memastikan pesan error ditampilkan
+        \item Pengujian interaksi pengguna
+    \end{itemize}
+    
+    \item \textbf{testPasswordValidation\_UI\_TooShort()}
+    \begin{itemize}
+        \item Menguji input password pendek melalui UI
+        \item Memastikan pesan error yang sesuai
+        \item Pengujian validasi input melalui UI
+    \end{itemize}
+    
+    \item \textbf{testPasswordValidation\_UI\_Valid()}
+    \begin{itemize}
+        \item Menguji input password valid melalui UI
+        \item Memastikan pesan sukses ditampilkan
+        \item Pengujian case positif
+    \end{itemize}
+\end{enumerate}
+
+\section{Kesimpulan}
+Proyek ini mendemonstrasikan implementasi testing yang komprehensif pada aplikasi Android, mencakup:
+\begin{itemize}
+    \item Unit testing untuk validasi logika bisnis
+    \item Instrumental testing untuk validasi interaksi pengguna
+    \item Dokumentasi test case yang jelas
+    \item Implementasi best practices dalam testing
+\end{itemize}
+
+\section{Source Code}
+Kode sumber lengkap proyek ini dapat diakses di GitHub:
+\url{https://github.com/Mahathirrr/kpl-junit2}
+
+\end{document}
