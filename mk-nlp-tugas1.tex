@@ -1,0 +1,127 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\title{Sistem Koreksi Ejaan Bahasa Inggris dengan Pendekatan N-Gram}
+\author{Penulis}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Pendahuluan}
+Sistem koreksi ejaan ini dibangun untuk mendeteksi dan memperbaiki kesalahan pengetikan dalam teks bahasa Inggris. Sistem ini menggunakan model statistik berbasis frekuensi kata dan konteks kalimat dengan memanfaatkan n-gram. Berikut kemampuan utama sistem:
+
+\begin{itemize}
+    \item Deteksi kata salah eja dalam kalimat/paragraf
+    \item Saran koreksi berdasarkan konteks kalimat
+    \item Evaluasi kinerja dengan berbagai metrik
+\end{itemize}
+
+\section{Cara Kerja}
+\subsection{Model Bahasa}
+Sistem menggunakan korpus \textit{big.txt} untuk membangun:
+\begin{itemize}
+    \item \textbf{Unigram}: Frekuensi kata tunggal
+    \item \textbf{Bigram}: Pola kemunculan pasangan kata berurutan
+    \item \textbf{Trigram}: Pola kemunculan triplet kata berurutan
+\end{itemize}
+
+\subsection{Model Kesalahan}
+Menggunakan operasi edit dengan jarak Levenshtein:
+\begin{itemize}
+    \item \textbf{Edits1}: Semua kemungkinan perubahan 1 operasi edit (hapus, sisip, ganti, transpose)
+    \item \textbf{Edits2}: Kombinasi 2 operasi edit
+\end{itemize}
+
+\subsection{Alur Kerja}
+\begin{enumerate}
+    \item Ekstraksi kata dari teks input
+    \item Pemeriksaan keanggotaan dalam kamus
+    \item Generasi kandidat koreksi
+    \item Seleksi kandidat terbaik menggunakan probabilitas dan konteks
+\end{enumerate}
+
+\section{Implementasi}
+Kode utama menggunakan Python dengan struktur kelas \texttt{SpellingCorrector}:
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    numbers=left
+}
+
+\begin{lstlisting}[caption=Klas Utama SpellingCorrector]
+class SpellingCorrector:
+    def __init__(self, corpus_file='big.txt'):
+        self.WORDS = Counter()
+        self.BIGRAMS = defaultdict(Counter)
+        self.TRIGRAMS = defaultdict(Counter)
+        self.N = 0
+        self.load_corpus(corpus_file)
+    
+    def _build_ngrams(self, all_words):
+        # Implementasi pembuatan bigram dan trigram
+        ...
+    
+    def correction(self, word, context=None):
+        # Logika seleksi kandidat dengan konteks
+        ...
+\end{lstlisting}
+
+\section{Evaluasi}
+\subsection{Metrik Evaluasi}
+Sistem dievaluasi menggunakan 4 dataset berbeda:
+\begin{itemize}
+    \item spell-testset1.txt: Akurasi 74.81\%
+    \item spell-testset2.txt: Akurasi 67.50\% 
+    \item wikipedia.txt: Akurasi 60.69\%
+    \item aspell.txt: Akurasi 43.31\%
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\caption{Perbandingan Kinerja pada Berbagai Dataset}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Dataset} & \textbf{Akurasi} & \textbf{Presisi} & \textbf{Recall} & \textbf{F1} \\
+\hline
+spell-testset1 & 74.81\% & 77.99\% & 94.84\% & 85.59\% \\
+spell-testset2 & 67.50\% & 75.63\% & 86.26\% & 80.60\% \\
+wikipedia & 60.69\% & 68.86\% & 83.60\% & 75.51\% \\
+aspell & 43.31\% & 54.12\% & 68.45\% & 60.45\% \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Contoh Koreksi}
+Input:
+\begin{verbatim}
+Thiss is an exampel of a paragraf with severall mispelled words.
+The spellin correcton systm should be able to detecct and sugggest...
+\end{verbatim}
+
+Output:
+\begin{verbatim}
+this is an example of a paragraph with several dispelled words.
+The spelling correction system should be able to detect and suggest...
+\end{verbatim}
+
+\section{Kesimpulan}
+Sistem ini menunjukkan:
+\begin{itemize}
+    \item Kemampuan deteksi kesalahan yang baik (Recall 94.84\%)
+    \item Ketergantungan kuat pada kualitas dataset pelatihan
+    \item Performa menurun pada kata yang tidak ada dalam korpus
+    \item Potensi peningkatan dengan model konteks yang lebih kompleks
+\end{itemize}
+
+Kode lengkap tersedia di repositori GitHub: \url{https://github.com/example/spelling-corrector}
+
+\end{document}
